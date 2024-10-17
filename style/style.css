@@ -4,5 +4,25 @@ img{
 
 .paraula_secreta{
     size: 30px;
-    letter-spacing: 20px;
+    letter-spacing: 10px;
+}
+
+
+.boto-habilitat {
+    color: black;
+    border: 2px solid black;
+    background-color: white; 
+    cursor: pointer;
+}
+
+.boto-deshabilitat {
+    color: red;
+    border: 2px solid red;
+    background-color: lightgray; 
+}
+
+.boto-seleccionat {
+    color: red;
+    border: 2px solid red;
+    background-color: lightgray; 
 }
