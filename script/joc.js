@@ -3,32 +3,47 @@ const inpuObj = document.getElementById("paraulaSecreta");
 const buttObj = document.getElementById("button");
 const imgObj = document.getElementById("imatge");
 const paraulaActualObj = document.getElementById("paraulaActual");
+const puntsActualsObj = document.getElementById("puntsActuals");
+const totalPartidesObj = document.getElementById("totalPartides");
+const partidesGuanyadesObj = document.getElementById("partidesGuanyades");
+const percentatgeGuanyadesObj = document.getElementById("percentatgeGuanyades");
+const millorPartidaObj = document.getElementById("millorPartida");
 
-// Variables
+// Variables de la partida
 let paraulaSecreta;
-let paraulaIntroduida;
 let paraulaActual = [];
 let jugadaFallada = 0;
+let puntsActuals = 0;
+let encertsConsecutius = 0;
 const maxJugadesFallades = 10;
+
+// Variables d'estadístiques globals
+let totalPartides = 0;
+let partidesGuanyades = 0;
+let millorPuntuacio = 0;
+let millorPuntuacioData = null;
+
+// Funcions
 
 function comencarPartida() {
     let paraulaIntroduida = inpuObj.value;
-    imgObj.src = "img/penjat_0.jpg";
-    jugadaFallada = 0;
     
-
-
     if (paraulaIntroduida) {
-        if (!isNaN(paraulaIntroduida)) {  
+        if (!isNaN(paraulaIntroduida)) {
             alert("Has d'introduir una paraula, un número no és vàlid");
         } else {
-            if (paraulaIntroduida.length > 3) { 
-                paraulaSecreta = paraulaIntroduida.toUpperCase().split(""); 
+            if (paraulaIntroduida.length > 3) {
+                paraulaSecreta = paraulaIntroduida.toUpperCase().split("");
                 inpuObj.disabled = true;
                 buttObj.disabled = true;
-                habilitarButo();  
-                paraulaActualInicial(); // Inicializar la palabra actual con "_"
-                mostrarParaulaPantalla(); // Mostrar la palabra en pantalla
+                habilitarBoto();
+                paraulaActualInicial();
+                puntsActuals = 0;
+                jugadaFallada = 0;
+                encertsConsecutius = 0;
+                mostrarParaulaPantalla();
+                imgObj.src = "img/penjat_0.jpg";
+                puntsActualsObj.textContent = puntsActuals;
                 paraulaActualObj.style.backgroundColor = ""; // Resetear color de fondo de la palabra
             } else {
                 alert("Has d'introduir una paraula de com a mínim 4 lletres");
@@ -49,94 +64,115 @@ function mostrarParaula() {
 
 function jugarLletra(obj) {
     let lletraJugada = obj.textContent;
-    let lletraEncertada = false; // Variable para saber si la letra ha sido acertada
-    
+    let lletraEncertada = false;
+    let lletresEncertades = 0;
 
-    // Verificar si la letra jugada está en la palabra secreta
     if (paraulaSecreta.includes(lletraJugada)) {
-        // Recorrer la palabra secreta y actualizar la palabra actual en todas las posiciones correctas
         for (let i = 0; i < paraulaSecreta.length; i++) {
             if (paraulaSecreta[i] === lletraJugada) {
-                paraulaActual[i] = lletraJugada; // Revelar la letra en la palabra actual
+                paraulaActual[i] = lletraJugada;
                 lletraEncertada = true;
+                lletresEncertades++;
             }
         }
     } else {
-        // Incrementar jugadas falladas si la letra no está en la palabra secreta
         jugadaFallada++;
-        imgObj.src = "img/penjat_" + jugadaFallada + ".jpg"; // Actualizar imagen del ahorcado
+        imgObj.src = "img/penjat_" + jugadaFallada + ".jpg";
     }
 
-    
-
-    mostrarParaulaPantalla(); // Mostrar la palabra actualizada en la pantalla
-    obj.disabled = true; // Deshabilitar el botón de la letra jugada
-    obj.classList.remove('boto-habilitat');  
+    mostrarParaulaPantalla();
+    puntsActualsObj.textContent = puntsActuals;
+    obj.disabled = true;
+    obj.classList.remove('boto-habilitat');
     obj.classList.add('boto-seleccionat');
 
     if (lletraEncertada) {
+        encertsConsecutius++;
+        let punts = encertsConsecutius * lletresEncertades;
+        puntsActuals += punts;
+        mostrarParaulaPantalla();
         comprovarVictoria();
-        
-    } else if (jugadaFallada >= maxJugadesFallades) {
-        perdrePartida();
-        
+    } else {
+        encertsConsecutius = 0;
+        if (puntsActuals > 0) {
+            puntsActuals--;
+        }
+        if (jugadaFallada >= maxJugadesFallades) {
+            perdrePartida();
+        }
     }
 }
 
 function comprovarVictoria() {
-    // Si todas las letras han sido adivinadas, se gana la partida
     if (paraulaActual.join('') === paraulaSecreta.join('')) {
-        paraulaActualObj.style.backgroundColor = "green"; // Cambiar fondo de la palabra a verde
-        deshabilitarButo(); // Deshabilitar botones
-        inpuObj.disabled = false;
-        buttObj.disabled = false;
+        paraulaActualObj.style.backgroundColor = "green";
+        deshabilitarBoto();
+        actualitzarEstadistiques(true); // Gana la partida
+        resetPartida();
     }
 }
 
 function perdrePartida() {
-    // Mostrar la palabra secreta completa y cambiar fondo de la palabra a rojo
-    paraulaActualObj.textContent = paraulaSecreta.join(' '); // Mostrar la palabra secreta completa
-    paraulaActualObj.style.backgroundColor = "red"; // Cambiar fondo de la palabra a rojo
-    deshabilitarButo(); // Deshabilitar botones
-    inpuObj.disabled = false;
-    buttObj.disabled = false;
+    paraulaActualObj.textContent = paraulaSecreta.join(' ');
+    paraulaActualObj.style.backgroundColor = "red";
+    deshabilitarBoto();
+    actualitzarEstadistiques(false); // Pierde la partida
+    resetPartida();
 }
 
+function actualitzarEstadistiques(guanyada) {
+    totalPartides++;
+    totalPartidesObj.textContent = totalPartides;
+    
+    if (guanyada) {
+        partidesGuanyades++;
+        partidesGuanyadesObj.textContent = partidesGuanyades;
+    }
 
-function deshabilitarButo() {
-    for (let i = 1; i <= 26; i++) {  
-        let literal = "boto" + i;
-        const botoA = document.getElementById(literal);
-        botoA.disabled = true;
-        botoA.classList.remove('boto-habilitat');
-        botoA.classList.add('boto-deshabilitat');
-        
+    let percentatgeGuanyades = (partidesGuanyades / totalPartides) * 100;
+    percentatgeGuanyadesObj.textContent = Math.round(percentatgeGuanyades);
+
+    if (puntsActuals > millorPuntuacio) {
+        millorPuntuacio = puntsActuals;
+        millorPuntuacioData = new Date().toLocaleString();
+        millorPartidaObj.textContent = `${millorPuntuacioData} - ${millorPuntuacio} punts`;
     }
 }
 
-function habilitarButo() {
-    for (let i = 1; i <= 26; i++) {  
+function resetPartida() {
+    inpuObj.disabled = false;
+    buttObj.disabled = false;
+    paraulaActual = [];
+    paraulaActualObj.classList.remove("ganado", "perdido");
+}
+
+function habilitarBoto() {
+    for (let i = 1; i <= 26; i++) {
         let literal = "boto" + i;
         const botoA = document.getElementById(literal);
         botoA.disabled = false;
         botoA.classList.remove('boto-deshabilitat', 'boto-seleccionat');
         botoA.classList.add('boto-habilitat');
+    }
+}
 
-        
+function deshabilitarBoto() {
+    for (let i = 1; i <= 26; i++) {
+        let literal = "boto" + i;
+        const botoA = document.getElementById(literal);
+        botoA.disabled = true;
+        botoA.classList.remove('boto-habilitat');
+        botoA.classList.add('boto-deshabilitat');
     }
 }
 
 function paraulaActualInicial() {
-    // Inicializar la palabra actual con guiones bajos
-    paraulaActual = [];
-    for (let i = 0; i < paraulaSecreta.length; i++) {
-        paraulaActual.push('_');
-    }
+    paraulaActual = Array(paraulaSecreta.length).fill('_');
+    mostrarParaulaPantalla();
 }
 
 function mostrarParaulaPantalla() {
-    // Mostrar la palabra actual en la pantalla, separada por espacios
     paraulaActualObj.textContent = paraulaActual.join(' ');
 }
 
-deshabilitarButo();
+deshabilitarBoto();
