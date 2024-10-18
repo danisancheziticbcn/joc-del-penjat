@@ -64,44 +64,57 @@ function mostrarParaula() {
 
 function jugarLletra(obj) {
     let lletraJugada = obj.textContent;
-    let lletraEncertada = false;
+    let lletraEncertada = false; // Variable para saber si la letra ha sido acertada
     let lletresEncertades = 0;
-
+    
+    // Verificar si la letra jugada está en la palabra secreta
     if (paraulaSecreta.includes(lletraJugada)) {
+        // Recorrer la palabra secreta y actualizar la palabra actual en todas las posiciones correctas
         for (let i = 0; i < paraulaSecreta.length; i++) {
             if (paraulaSecreta[i] === lletraJugada) {
-                paraulaActual[i] = lletraJugada;
+                paraulaActual[i] = lletraJugada; // Revelar la letra en la palabra actual
                 lletraEncertada = true;
                 lletresEncertades++;
             }
         }
-    } else {
-        jugadaFallada++;
-        imgObj.src = "img/penjat_" + jugadaFallada + ".jpg";
-    }
-
-    mostrarParaulaPantalla();
-    puntsActualsObj.textContent = puntsActuals;
-    obj.disabled = true;
-    obj.classList.remove('boto-habilitat');
-    obj.classList.add('boto-seleccionat');
-
-    if (lletraEncertada) {
+        
+        // Si acertamos, actualizamos los puntos
         encertsConsecutius++;
-        let punts = encertsConsecutius * lletresEncertades;
-        puntsActuals += punts;
-        mostrarParaulaPantalla();
-        comprovarVictoria();
+        let punts = encertsConsecutius * lletresEncertades; // Puntos consecutivos * letras acertadas
+        puntsActuals += punts; // Sumar puntos actualizados
     } else {
-        encertsConsecutius = 0;
+        // Si fallamos, se suma el contador de jugadas falladas
+        jugadaFallada++;
+        imgObj.src = "img/penjat_" + jugadaFallada + ".jpg"; // Actualizar imagen del ahorcado
+        
+        // Restamos un punto solo si los puntos actuales son mayores a 0 (para evitar negativos)
         if (puntsActuals > 0) {
             puntsActuals--;
         }
-        if (jugadaFallada >= maxJugadesFallades) {
-            perdrePartida();
-        }
+        
+        // Reiniciamos la cuenta de aciertos consecutivos porque fallamos
+        encertsConsecutius = 0;
+    }
+
+    // Actualizamos la palabra en la pantalla
+    mostrarParaulaPantalla(); // Mostrar la palabra actualizada en la pantalla
+
+    // Actualizar los puntos en pantalla
+    document.getElementById('puntsActuals').textContent = puntsActuals; // Mostrar los puntos actuales
+    
+    // Deshabilitar el botón de la letra jugada y cambiar su estilo
+    obj.disabled = true;
+    obj.classList.remove('boto-habilitat');  
+    obj.classList.add('boto-seleccionat');
+
+    // Comprobamos si hemos ganado la partida
+    if (lletraEncertada) {
+        comprovarVictoria();
+    } else if (jugadaFallada >= maxJugadesFallades) {
+        perdrePartida();
     }
 }
+
 
 function comprovarVictoria() {
     if (paraulaActual.join('') === paraulaSecreta.join('')) {
@@ -143,7 +156,6 @@ function resetPartida() {
     inpuObj.disabled = false;
     buttObj.disabled = false;
     paraulaActual = [];
-    paraulaActualObj.classList.remove("ganado", "perdido");
 }
 
 function habilitarBoto() {
