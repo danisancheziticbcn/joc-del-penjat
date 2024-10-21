@@ -1,6 +1,7 @@
 // Definim tots els objectes
 const inpuObj = document.getElementById("paraulaSecreta");
-const buttObj = document.getElementById("button");
+const buttullObj = document.getElementById("buttonull");
+const buttstartObj = document.getElementById("buttonstart");
 const imgObj = document.getElementById("imatge");
 const paraulaActualObj = document.getElementById("paraulaActual");
 const puntsActualsObj = document.getElementById("puntsActuals");
@@ -35,7 +36,8 @@ function comencarPartida() {
             if (paraulaIntroduida.length > 3) {
                 paraulaSecreta = paraulaIntroduida.toUpperCase().split("");
                 inpuObj.disabled = true;
-                buttObj.disabled = true;
+                buttullObj.disabled = true;
+                buttstartObj.disabled = true;
                 habilitarBoto();
                 paraulaActualInicial();
                 puntsActuals = 0;
@@ -157,7 +159,8 @@ function actualitzarEstadistiques(guanyada) {
 
 function resetPartida() {
     inpuObj.disabled = false;
-    buttObj.disabled = false;
+    buttullObj.disabled = false;
+    buttstartObj.disabled = false;
     paraulaActual = [];
 }
 
