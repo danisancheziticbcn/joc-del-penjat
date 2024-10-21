@@ -5,12 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JOC PENJAT</title>
     <link rel="stylesheet" href="/style/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </head>
 <body>
     <section>
         <input type="password" id="paraulaSecreta" placeholder="Posa una paraula...">
+        <button id="button" onclick="mostrarParaula()"><i class="fas fa-eye"></i></button>
         <button id="button" onclick="comencarPartida()">Començar partida</button>
-        <button id="button" onclick="mostrarParaula()">Mostrar</button>
+        
     </section>
     <section>
         <p id="paraulaActual" class="paraula_secreta">Començar partida</p>
