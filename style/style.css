@@ -5,7 +5,8 @@ img{
 
 .paraula_secreta{
     size: 30px;
-    letter-spacing: 10px;
+    letter-spacing: 0px;
+    transition: letter-spacing 0.5s ease-in-out; 
 }
 
 .boto-habilitat {

@@ -45,6 +45,9 @@ function comencarPartida() {
                 imgObj.src = "img/penjat_0.jpg";
                 puntsActualsObj.textContent = puntsActuals;
                 paraulaActualObj.style.backgroundColor = ""; // Resetear color de fondo de la palabra
+                // Cambiar el espaciado de las letras al iniciar la partida
+                const textComencar = document.querySelector(".paraula_secreta");
+                textComencar.style.letterSpacing = "10px";
             } else {
                 alert("Has d'introduir una paraula de com a mínim 4 lletres");
             }
